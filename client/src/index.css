@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #F9F7F5;
+}
+
+/* .cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(230px, 1fr));
+  grid-gap: 20px;
+  position: relative;
+  top: 180px;
+}
+
+.card {
+  border: 4px solid rgb(15, 14, 13);
+  display: grid;
+  grid-template-rows: max-content 200px 1fr;
+}
+
+.name-input{
+  margin:15px;
+  padding:10px;
+  border-radius:10px;
+  border-color: #3d7e9f;
+  background-color: #F7F5EB;
+}
+
+
+
+.description-input{
+  margin:15px;
+  padding:10px;
+  border-radius:10px;
+  border-color: #3d7e9f;
+  background-color: #F7F5EB;
+}
+
+
+
+.add-product-form{
+  border: 4px solid rgb(234, 224, 218);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.submit-new-button{
+  padding:10px;
+  border:none;
+  background-color: #3d7e9f;
+  color: white;
+  font-weight:600;
+  border-radius:5px;
+  width:80%;
+  margin: 10px;
+}
+
+
+.new-product-card{
+  border: 4px solid rgb(186, 175, 168);
+  position: relative;
+  top: 100px;
+  left: 500px;
+  width: 400px;
+  height: 400px;
+}
+
+
+
+.post-card{
+  position: relative;
+  top: 100px;
+  left: 500px;
+  width: 400px;
+  height: 400px;
+}
+
+.google-button{
+  background-color: "#ffffff";
+  border: "1px solid #dcdcdc";
+  border-radius: "5px";
+  padding: "10px 20px";
+  font-size: "16px";
+  cursor: "pointer";
+  display: "flex";
+  align-items: "center";
+
+}
+
+        */
