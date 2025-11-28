@@ -1,3 +1,9 @@
+from flask import request, make_response, session, abort
+from flask_restful import Resource
+from sqlalchemy.exc import IntegrityError
+
+from ..models import User, db
+
 # ------------------------------
 # USER  
 # ------------------------------

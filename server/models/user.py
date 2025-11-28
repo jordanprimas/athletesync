@@ -2,6 +2,9 @@ from datetime import datetime
 from sqlalchemy.orm import validates, foreign
 from sqlalchemy import and_
 from sqlalchemy_serializer import SerializerMixin
+from sqlalchemy.ext.hybrid import hybrid_property
+from werkzeug.security import generate_password_hash, check_password_hash
+import re
 
 from . import db
 
@@ -54,8 +57,7 @@ class User(db.Model, SerializerMixin):
 
     @password_hash.setter
     def password_hash(self, password):
-        password_hash = generate_password_hash(password.encode('utf-8'))
-        self._password_hash = password_hash.decode('utf-8') if isinstance(password_hash, bytes) else password_hash
+        self._password_hash = generate_password_hash(password)
 
     def authenticate(self, password):
         return check_password_hash(self._password_hash, password.encode('utf-8'))

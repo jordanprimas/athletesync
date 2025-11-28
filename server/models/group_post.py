@@ -42,11 +42,6 @@ class GroupPost(db.Model, SerializerMixin):
         viewonly=True
     )
 
-    addendums = db.relationship(
-        "Addendum",
-        primaryjoin="and_(foreign(Addendum.target_id)==GroupPost.id, Addendum.target_type=='post')",
-        viewonly=True
-    )
 
     def __repr__(self):
         return f'<GroupPost id={self.id} group={self.group_id} author={self.author_id}>'

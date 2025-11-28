@@ -34,12 +34,18 @@ class SOAPNote(db.Model, SerializerMixin):
     athlete = db.relationship('User', foreign_keys=[athlete_id], back_populates='soap_notes_as_athlete')
     trainer = db.relationship('User', foreign_keys=[trainer_id], back_populates='soap_notes_as_trainer')
 
-    # Addendums (read-only polymorphic)
+    
     addendums = db.relationship(
         "Addendum",
         primaryjoin="and_(foreign(Addendum.target_id)==SOAPNote.id, Addendum.target_type=='soap_note')",
         viewonly=True
     )
+    comments = db.relationship(
+        "Comment",
+        primaryjoin="and_(foreign(Comment.target_id)==SOAPNote.id, Comment.target_type=='soap_note')",
+        backref="soap_note_parent"
+    )
+
 
     def __repr__(self):
         return f'<SOAPNote id={self.id} athlete={self.athlete_id} trainer={self.trainer_id}>'

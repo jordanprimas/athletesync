@@ -35,14 +35,36 @@ class Comment(db.Model, SerializerMixin):
         "GroupPost",
         primaryjoin="and_(foreign(Comment.target_id)==GroupPost.id, Comment.target_type=='post')",
         back_populates="comments",
-        viewonly=True
+        viewonly=True,
+        overlaps="comments"
     )
     wellness_entry = db.relationship(
         "WellnessEntry",
         primaryjoin="and_(foreign(Comment.target_id)==WellnessEntry.id, Comment.target_type=='wellness_entry')",
         back_populates="comments",
-        viewonly=True
+        viewonly=True,
+        overlaps="comments"
     )
+    soap_note = db.relationship(
+        "SOAPNote",
+        primaryjoin="and_(foreign(Comment.target_id)==SOAPNote.id, Comment.target_type=='soap_note')",
+        viewonly=True,
+        overlaps="comments,document_parent"
+    )
+    document = db.relationship(
+        "Document",
+        primaryjoin="and_(foreign(Comment.target_id)==Document.id, Comment.target_type=='document')",
+        viewonly=True,
+        overlaps="comments,soap_note_parent"
+    )
+
+    @validates("target_type")
+    def validate_target_type(self, key, value):
+        allowed = {"post", "wellness_entry", "soap_note", "document"}
+        if value not in allowed:
+            raise ValueError(f"Invalid target_type '{value}'")
+        return value
+
 
     def __repr__(self):
         return f'<Comment id={self.id} author={self.author_id} target={self.target_type}:{self.target_id}>'

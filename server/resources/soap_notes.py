@@ -1,5 +1,12 @@
+from flask import request, make_response, session, abort
+from flask_restful import Resource
+from sqlalchemy.exc import IntegrityError
+
+from ..models import User, SOAPNote, db
+from ..decorators.auth import require_role
+
 # ------------------------------
-# SOAPNOTE 
+# SOAPNote 
 # ------------------------------
 class SOAPNoteResource(Resource):
     def get(self, athlete_id=None):
@@ -10,10 +17,10 @@ class SOAPNoteResource(Resource):
         user = User.query.get('user_id')
 
         if user.role == 'athlete':
-            notes = SOAPNOTE.query.filter_by(athlete_id=user_id).all()
+            notes = SOAPNote.query.filter_by(athlete_id=user_id).all()
         else:
             if athlete_id:
-                notes = SOAPNOTE.query.filter_by(athlete_id=athlete_id).all()
+                notes = SOAPNote.query.filter_by(athlete_id=athlete_id).all()
             else:
                 notes = SOAPNote.query.all()
 
@@ -29,7 +36,7 @@ class SOAPNoteResource(Resource):
             if not athlete_id:
                 abort(400, "athlete_id is required")
 
-            new_note = SOAPNOTE(
+            new_note = SOAPNote(
                 athlete_id=athlete_id,
                 trainer_id=user_id,
                 subjective=data.get('subjective'),
@@ -70,7 +77,7 @@ class SOAPNoteById(Resource):
 
     @require_role('trainer')
     def patch(self, id):
-        note = SOAPNOTE.query.get(id)
+        note = SOAPNote.query.get(id)
         if not note:
             abort(404, "SOAPNote not found.")
 
@@ -88,7 +95,7 @@ class SOAPNoteById(Resource):
 
     @require_role('trainer')
     def delete(self, id):
-        note = SOAPNOTE.query.get(id)
+        note = SOAPNote.query.get(id)
         if not note:
             abort(404, "SOAPNote not found.")
 

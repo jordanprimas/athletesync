@@ -1,7 +1,7 @@
 # decorators/auth.py
 from functools import wraps
 from flask import session, abort
-from models import User  
+from ..models import User  
 
 def require_role(*roles):
     """

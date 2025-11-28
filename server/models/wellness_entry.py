@@ -33,8 +33,6 @@ class WellnessEntry(db.Model, SerializerMixin):
     rehab_completed = db.Column(db.Boolean, default=False)
     notes = db.Column(db.Text)
 
-    # EMR-style status: active / corrected / invalid
-    status = db.Column(db.String(20), default='active')
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 

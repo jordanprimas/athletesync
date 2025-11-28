@@ -1,7 +1,12 @@
+from flask import request, make_response, session, abort
+from flask_restful import Resource
+
+from ..models import AthleteProfile, User, db
+from ..decorators.auth import require_role
+
 # ------------------------------
 # ATHLETE PROFILE 
 # ------------------------------
-
 class AthleteProfileResource(Resource):
     def get(self, id=None):
         user_id = session.get('user_id')

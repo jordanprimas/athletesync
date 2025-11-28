@@ -32,12 +32,7 @@ class Addendum(db.Model, SerializerMixin):
 
     author = db.relationship('User', back_populates='addendums')
 
-    # convenience reverse lookups (viewonly)
-    post = db.relationship(
-        "GroupPost",
-        primaryjoin="and_(foreign(Addendum.target_id)==GroupPost.id, Addendum.target_type=='post')",
-        viewonly=True
-    )
+   
     wellness_entry = db.relationship(
         "WellnessEntry",
         primaryjoin="and_(foreign(Addendum.target_id)==WellnessEntry.id, Addendum.target_type=='wellness_entry')",

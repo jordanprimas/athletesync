@@ -1,42 +1,41 @@
+from flask import request, make_response, session, abort
+from flask_restful import Resource
+
+from ..models import GroupPost, db
+
 
 # ------------------------------
 # GROUP POST 
 # ------------------------------
 class GroupPostResource(Resource):
     def get(self):
-        posts = [post.to_dict() for post in GroupPost.query.all()]
-
+        posts = GroupPost.query.all()
         if not posts:
-            abort(404, "No posts were found!")
+            abort(404, "No posts were found.")
         
-        response = make_response(
-            posts, 
-            200
-        )
-
-        return response
+        return make_response([p.to_dict() for p in posts], 200)
 
     def post(self):
-        try:
-            user_id = session['user_id']
-            data = request.get_json()
+        data = request.get_json() or {}
+        user_id = session.get("user_id")
+        group_id = data.get("group_id")
+        content = data.get("content")
 
-            new_post = GroupPost(
-                title = data.get('title'),
-                content = data.get('content'),
-                group_id=data.get("group_id"),
-                user_id = user_id
-            )
+        if not user_id:
+            abort(401, "Unauthorized")
+        if not group_id or not content:
+            abort(400, "group_id and content are required.")
 
-            db.session.add(new_post)
-            db.session.commit()
+        new_post = GroupPost(
+            group_id=group_id,
+            author_id=user_id,
+            content=content
+        )
 
-            return make_response(new_post.to_dict(), 201)
+        db.session.add(new_post)
+        db.session.commit()
 
-        except ValueError as e:
-            return {'error': str(e)}, 400
-
-
+        return make_response(new_post.to_dict(), 201)
 
 
 # ------------------------------
@@ -45,44 +44,39 @@ class GroupPostResource(Resource):
 
 class GroupPostByID(Resource):
     def get(self, id):
-        post = GroupPost.query.filter_by(id=id).first()
+        post = GroupPost.query.get(id)
         if not post:
-            abort(404, "The post you are looking for could not be found!")
-
+            abort(404, "Post not found.")
         return make_response(post.to_dict(), 200)
 
     def patch(self, id):
-        post = GroupPost.query.filter_by(id=id).first()
+        post = GroupPost.query.get(id)
         if not post:
             abort(404, "Post not found.")
 
         user_id = session.get("user_id")
-        if post.user_id != user_id:
-            abort(403, "Not Allowed.")
+        if post.author_id != user_id:
+            abort(403, "You can only edit your own post.")
 
-        data = request.get_json()
-        for attr, value in data.items():
-            setattr(post, attr, value)
+        data = request.get_json() or {}
+        if "content" in data:
+            post.content = data["content"]
 
         db.session.commit()
-
         return make_response(post.to_dict(), 200)
 
 
     def delete(self, id):
-        post = GroupPost.query.filter_by(id=id).first()
+        post = GroupPost.query.get(id)
         if not post:
-            abort(404, "The post you are trying to delete can't be found!")
+            abort(404, "Post not found.")
+
+        user_id = session.get("user_id")
+        if post.author_id != user_id:
+            abort(403, "You can only delete your own post.")
 
         db.session.delete(post)
         db.session.commit()
 
-        return make_response(
-            {
-                "delete_successful": True,
-                "message": "Post deleted",
-                "id": id
-            },
-            200
-        )
+        return make_response({"message": "Post deleted", "id": id}, 200)
 

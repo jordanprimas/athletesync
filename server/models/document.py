@@ -37,6 +37,12 @@ class Document(db.Model, SerializerMixin):
         primaryjoin="and_(foreign(Addendum.target_id)==Document.id, Addendum.target_type=='document')",
         viewonly=True
     )
+    comments = db.relationship(
+        "Comment",
+        primaryjoin="and_(foreign(Comment.target_id)==Document.id, Comment.target_type=='document')",
+        backref="document_parent"
+    )
+
 
     def __repr__(self):
         return f'<Document id={self.id} title={self.title}>'

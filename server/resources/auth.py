@@ -1,4 +1,8 @@
+from flask import request, make_response, session, abort
+from flask_restful import Resource
+from sqlalchemy.exc import IntegrityError
 
+from ..models import User, db
 
 # ------------------------------
 # Login  
@@ -20,7 +24,7 @@ class LoginResource(Resource):
         session['user_id'] = user.id
         return make_response(user.to_dict(), 200)
 
-api.add_resource(LoginResource, '/api/login')
+
 
 
 # ------------------------------
